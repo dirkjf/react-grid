@@ -1,0 +1,36 @@
+$color-primary: #61dafb;
+$cell-size: 8px;
+
+
+body {
+  background-color: black;
+  font-family: Arial, Helvetica, sans-serif;
+  color: $color-primary;
+  margin: 0;
+  padding: 0;
+}
+
+.grid {
+  width: max-content;
+  height: max-content;
+}
+
+.row {
+  display: block;
+  font-size: 0;
+}
+
+.cell {
+  font-size: .8rem;
+  line-height: normal;
+  display: inline-block;
+  width: $cell-size;
+  height: $cell-size;
+  //margin: .5px;
+  outline: 1px solid black;
+
+  &.alive {
+    background-color: $color-primary;
+    color: black;
+  }
+}
