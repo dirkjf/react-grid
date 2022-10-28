@@ -1,59 +1,58 @@
-import React, { useState, useEffect } from 'react';
-import './App.scss';
+import React, { useState, useEffect } from "react";
+import "./App.scss";
 
 function App() {
-
-    const [width, setWidth] = useState(60);
-    const [height, setHeight] = useState(50);
+    const [width, setWidth] = useState(40);
+    const [height, setHeight] = useState(30);
     const [aliveProbability, setAliveProbability] = useState(40); // Percentage
+    const [aliveArray, setAliveArray] = useState(new Array(width * height));
 
-    const renderGridRow = () => {
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setAliveArray((oldArray) => {
+                const newArray = [...oldArray];
+                for (let i = 0; i < newArray.length; i++) {
+                    newArray[i] = Math.random() < aliveProbability / 100;
+                }
+                return newArray;
+            });
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [aliveProbability]);
+
+    const renderGridRow = (rowNum) => {
         let gridRow = [];
         for (let i = 0; i < width; i++) {
-            gridRow[i] = <Cell key={i} aliveProbability={aliveProbability} />;
+            gridRow[i] = <Cell key={i} alive={aliveArray[rowNum * height + i]} />;
         }
         return gridRow;
-    }
+    };
 
     const renderGrid = () => {
         let gridRows = [];
         for (let i = 0; i < height; i++) {
-            gridRows[i] = <Row key={i}>{renderGridRow(i)}</Row>;
+            gridRows[i] = (
+                <Row key={i} rowNum={i}>
+                    {renderGridRow(i)}
+                </Row>
+            );
         }
-        return (gridRows);
-    }
+        return gridRows;
+    };
 
-    return (
-        <div className="grid">
-            {renderGrid()}
-        </div>
-    );
+    return <div className="grid">{renderGrid()}</div>;
 }
 
 function Cell(props) {
-
-    const [alive, setAlive] = useState(Math.random() < props.aliveProbability/100);
-
-    useEffect(() => {
-        const interval = setInterval(() => setAlive(Math.random() < props.aliveProbability/100), 1000);
-        return () => clearInterval(interval);
-    }, []);
-
     return (
-        <div className={"cell " + (alive ? 'alive' : '') }>
+        <div className={"cell " + (props.alive ? "alive" : "")}>
             {props.children}
         </div>
     );
-
-
 }
 
 function Row(props) {
-    return (
-        <div className="row">
-            {props.children}
-        </div>
-    );
+    return <div className="row">{props.children}</div>;
 }
 
 export default App;
